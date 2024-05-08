@@ -19,25 +19,37 @@
   * Animated UI/UX
   * show weahter forcast (if possible)
   * loggin
-  
 * **Nice to Have:**
+
   * The hottes and coldes Place on the World today (if possible)
   * More selection of graphics (Kilmadiagramm, and more)
   * map shows data when you click on it
-
-
 * **Not nice to Haves**
+
   * get autmatic you location for the current weather in your area
   * Login system (for the their Personal Data)
   * More languages than English
 
-
-
 # Plan
 
-
+Thirst the basic of the Weather App then the "fetures" (not the nice to haves)
 
 # Class
 
-* **WeatherAPI Getter**
-* 
+1. For each API that we use, needs a Class
+2. load and save Class
+
+# Division of work
+
+ass
+
+| Name   | What did you do?                             | Date       |
+| ------ | -------------------------------------------- | ---------- |
+| Sascha | Added a Checklist and seached for some API´s | 08.05.2024 |
+|        |                                              |            |
+|        |                                              |            |
+
+
+# Checklist
+
+* [ ] the basic of the Weather App (search and find)
