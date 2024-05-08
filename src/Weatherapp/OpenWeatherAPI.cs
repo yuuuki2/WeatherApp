@@ -8,5 +8,11 @@ namespace Weatherapp
 {
     class OpenWeatherAPI
     {
+        public string CityName { get; set; }
+
+  
+
+
+
     }
 }
