@@ -38,10 +38,10 @@ Thirst the basic of the Weather App then the "fetures" (not the nice to haves)
 
 1. For each API that we use, needs a Class
 2. load and save Class
+3. 
 
 # Division of work
 
-ass
 
 | Name   | What did you do?                             | Date       |
 | ------ | -------------------------------------------- | ---------- |
