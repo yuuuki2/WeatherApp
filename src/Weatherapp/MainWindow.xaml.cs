@@ -26,7 +26,13 @@ namespace Weatherapp
 
             InitializeComponent();
             weatherWidget = new WeatherWidget(webView);
+            Loaded += MainWindow_Loaded;
+        }
 
+        // Big windowww
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Maximized;
         }
 
         private void Btn1_Click(object sender, RoutedEventArgs e)

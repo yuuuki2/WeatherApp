@@ -22,8 +22,7 @@ namespace Weatherapp
             webView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
             webView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
             webView.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
-            webView.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets.example", "", CoreWebView2HostResourceAccessKind.DenyCors);
-            webView.Source = new Uri("https://appassets.example/WidgetWetter.html");
+            webView.Source = new Uri("https://www.meteoblue.com/de/wetter/widget/three/wien_%c3%96sterreich_2761369");
         }
 
         private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
@@ -53,11 +52,9 @@ namespace Weatherapp
         {
             if (IsUrlBlocked(url))
             {
-                // Blockiere die Navigation, indem du nichts machst
                 return;
             }
 
-            // Ersetze die URL, um sicherzustellen, dass sie korrekt angezeigt wird
             if (url.Contains("/wetter/woche/index/"))
             {
                 string newUrl = Regex.Replace(url, "/wetter/woche/index/", "/wetter/widget/three/");

@@ -6,15 +6,18 @@
         xmlns:local="clr-namespace:Weatherapp"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        d:DesignWidth="1200"
+        d:DesignHeight="800">
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/> 
-                <RowDefinition Height="*"/> 
-                <RowDefinition Height="6*"/> 
-                
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="6*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -22,22 +25,11 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-            
+
         <Label x:Name="lbLocation" Grid.Column="0" Content="Location:" FontSize="20" VerticalAlignment="Center"/>
         <TextBlock x:Name="TxBLocation" Grid.Column="1" Grid.ColumnSpan="3" FontSize="20" VerticalAlignment="Center"/>
         <Button x:Name="btnHome" Grid.Row="1" Grid.Column="0" Content="Home" FontSize="20"/>
-           
-        <Button x:Name="btnMap" Grid.Row="1"  Grid.Column="3" Content="Map" FontSize="20"/>
-
-        <wv2:WebView2 x:Name="webView" Grid.Column="4"  Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            
-
-
-
-
+        <Button x:Name="btnMap" Grid.Row="1" Grid.Column="3" Content="Map" FontSize="20"/>
+        <wv2:WebView2 x:Name="webView" Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>
-
-
-
-
 </Window>

@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <iframe id="weatherFrame" src="https://www.meteoblue.com/de/wetter/widget/three/wien_%c3%96sterreich_2761369" frameborder="0" scrolling="NO" allowtransparency="true" sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox" style="width: 460px; height: 589px"></iframe>
+    <iframe id="weatherFrame" src="https://www.meteoblue.com/de/wetter/widget/three/wien_%c3%96sterreich_2761369" frameborder="0" scrolling="NO" allowtransparency="true" sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe>
 
     <script>
         // Blockiere Klicks auf spezifische Elemente
-        document.getElementById('meteoblueLink').addEventListener('click', function(event) {
+        document.getElementById('meteoblueLink').addEventListener('click', function (event) {
             event.preventDefault();
         });
 
         // Blockiere Klicks auf das Logo und den Mehr-Button
         document.querySelectorAll('a, .logo, .more-button').forEach(element => {
-            element.addEventListener('click', function(event) {
+            element.addEventListener('click', function (event) {
                 event.preventDefault();
             });
         });
 
         document.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function(event) {
+            link.addEventListener('click', function (event) {
                 event.preventDefault();
                 const newUrl = event.target.href;
                 window.chrome.webview.postMessage(newUrl);
