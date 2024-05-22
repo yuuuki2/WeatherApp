@@ -1,0 +1,44 @@
+{
+    "coord": {
+        "lon": 9.6,
+        "lat": 47.2331
+    },
+    "weather": [
+        {
+            "id": 804,
+            "main": "Clouds",
+            "description": "overcast clouds",
+            "icon": "04d"
+        }
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 286.79,
+        "feels_like": 286.43,
+        "temp_min": 284.51,
+        "temp_max": 288.23,
+        "pressure": 1022,
+        "humidity": 85
+    },
+    "visibility": 10000,
+    "wind": {
+        "speed": 2.24,
+        "deg": 315,
+        "gust": 2.24
+    },
+    "clouds": {
+        "all": 100
+    },
+    "dt": 1715177024,
+    "sys": {
+        "type": 2,
+        "id": 18948,
+        "country": "AT",
+        "sunrise": 1715140465,
+        "sunset": 1715193705
+    },
+    "timezone": 7200,
+    "id": 2779674,
+    "name": "Feldkirch",
+    "cod": 200
+}

@@ -6,7 +6,34 @@
         xmlns:local="clr-namespace:Weatherapp"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/> 
+                <RowDefinition Height="*"/> 
+                <RowDefinition Height="6*"/> 
+                
+            </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+            
+        <Label x:Name="lbLocation" Grid.Column="0" Content="Location:" FontSize="20" VerticalAlignment="Center"/>
+        <TextBlock x:Name="TxBLocation" Grid.Column="1" Grid.ColumnSpan="3" FontSize="20" VerticalAlignment="Center"/>
+        <Button x:Name="btnHome" Grid.Row="1" Grid.Column="0" Content="Home" FontSize="20"/>
+        <Button x:Name="btnB"  Grid.Row="1" Grid.Column="1" Content="B" FontSize="20"/>
+        <Button x:Name="btnC" Grid.Row="1"  Grid.Column="2" Content="C" FontSize="20"/>
+        <Button x:Name="btnMap" Grid.Row="1"  Grid.Column="3" Content="Map" FontSize="20"/>
+
+        <StackPanel x:Name="StpInformation" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"/>
 
     </Grid>
+
+
+
+
 </Window>
