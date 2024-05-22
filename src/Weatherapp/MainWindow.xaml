@@ -26,11 +26,11 @@
         <Label x:Name="lbLocation" Grid.Column="0" Content="Location:" FontSize="20" VerticalAlignment="Center"/>
         <TextBlock x:Name="TxBLocation" Grid.Column="1" Grid.ColumnSpan="3" FontSize="20" VerticalAlignment="Center"/>
         <Button x:Name="btnHome" Grid.Row="1" Grid.Column="0" Content="Home" FontSize="20"/>
-        <Button x:Name="btnB"  Grid.Row="1" Grid.Column="1" Content="B" FontSize="20"/>
-        <Button x:Name="btnC" Grid.Row="1"  Grid.Column="2" Content="C" FontSize="20"/>
+           
         <Button x:Name="btnMap" Grid.Row="1"  Grid.Column="3" Content="Map" FontSize="20"/>
 
         <wv2:WebView2 x:Name="webView" Grid.Column="4"  Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            
 
 
 

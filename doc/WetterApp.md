@@ -48,12 +48,15 @@ Thirst the basic of the Weather App then the "fetures" (not the nice to haves)
 | Sascha | Added a Checklist and seached for some API´s | 08.05.2024 |
 | Manuel | Test of Map/Display Widgets                  | 18.05.2024 |
 | Manuel | Added API Doku and Use                       | 15.05.2024 |
-|        |                                              |            |
+| Sascha | Added a new class and worked on the GUI      | 22.05.2024 |
 
 
 # Checklist
 
-* [ ] the basic of the Weather App (search and find)
+* [x] the basic of the Weather App (search and find)
+* [ ] Finish the GUI
+* [ ] All Must Haves are done
+* [ ] Polish the Programm
 
 
 
