@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Weatherapp"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
@@ -29,7 +30,10 @@
         <Button x:Name="btnC" Grid.Row="1"  Grid.Column="2" Content="C" FontSize="20"/>
         <Button x:Name="btnMap" Grid.Row="1"  Grid.Column="3" Content="Map" FontSize="20"/>
 
-        <StackPanel x:Name="StpInformation" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"/>
+        <wv2:WebView2 x:Name="webView" Grid.Column="4"  Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+
+
 
     </Grid>
 

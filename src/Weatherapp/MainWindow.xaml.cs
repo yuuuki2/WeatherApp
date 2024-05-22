@@ -20,9 +20,13 @@ namespace Weatherapp
     /// </summary>
     public partial class MainWindow : Window
     {
+        private WeatherWidget weatherWidget;
         public MainWindow()
         {
+
             InitializeComponent();
+            weatherWidget = new WeatherWidget(webView);
+
         }
 
         private void Btn1_Click(object sender, RoutedEventArgs e)
