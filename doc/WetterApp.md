@@ -166,9 +166,15 @@ Thirst the basic of the Weather App then the "fetures" (not the nice to haves)
 
 ### Funktionen exklusiv für OpenWeatherMap (4):
 
-1. **Air Pollution API:**
-   - Aktuelle, historische und Vorhersagedaten zur Luftverschmutzung.
-   - Überwache die Luftqualität in einer bestimmten Stadt und erhalte Warnungen bei hohen Schadstoffwerten.
+1. **Minute Forecast for 1 Hour**: Bereitstellung von minütlichen Wetterdaten für die nächste Stunde, ideal für kurzfristige Entscheidungen.
+2. **Hourly Forecast for 48 Hours**: Stündliche Wettervorhersagen für die nächsten zwei Tage, um detaillierte Planungen zu unterstützen.
+3. **Daily Forecast for 8 Days**: Tägliche Wettervorhersagen, die acht Tage in die Zukunft reichen, um langfristigere Vorhaben zu erleichtern.
+4. **Government Weather Alerts**: Integration von amtlichen Wetterwarnungen, die es Benutzern ermöglicht, über wichtige Wetterereignisse informiert zu bleiben.
+5. **Weather Data for Any Timestamp**: Zugriff auf Wetterdaten für jeden gewünschten Zeitpunkt, von historischen Daten bis zu Vorhersagen vier Tage im Voraus.
+6. **Daily Aggregation of Weather Data**: Tägliche Zusammenfassungen des Wetters, verfügbar von einem Archiv, das 45 Jahre zurückreicht, bis zu 1,5 Jahren in die Zukunft.
+7. **Weather Overview with AI Technologies**: Nutzung von KI-Technologien von OpenWeather, um eine leicht verständliche Zusammenfassung des aktuellen und des morgigen Wetters zu bieten.
+8. **Proprietary OpenWeather Model**: Die API basiert auf dem proprietären Modell von OpenWeather, das alle 10 Minuten aktualisiert wird, um genaue und aktuelle Wetterdaten zu liefern.
+
 
 ### Gemeinsame Funktionen, die von ECMWF genutzt werden können (ohne Limit):
 
