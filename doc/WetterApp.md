@@ -49,7 +49,7 @@ Thirst the basic of the Weather App then the "fetures" (not the nice to haves)
 | Manuel | Added API Doku and Use                          | 15.05.2024 |
 | Sascha | Added a new class and worked on the GUI         | 22.05.2024 |
 | Manuel | Worked on WheaterWidget and implementing in GUI | 22.05.2024 |
-| Sascha | Added Item List Box with ther items             | 29.05.2024 |
+| Sascha | Added Item List Box with their items            | 29.05.2024 |
 |        |                                                 |            |
 |        |                                                 |            |
 |        |                                                 |            |
