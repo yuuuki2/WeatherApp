@@ -43,12 +43,16 @@ Thirst the basic of the Weather App then the "fetures" (not the nice to haves)
 # Division of work
 
 | Name   | What did you do?                                | Date       |
-| ------ | ------------------------------------------------| ---------- |
+| ------ | ----------------------------------------------- | ---------- |
 | Sascha | Added a Checklist and seached for some API´s    | 08.05.2024 |
 | Manuel | Test of Map/Display Widgets                     | 18.05.2024 |
 | Manuel | Added API Doku and Use                          | 15.05.2024 |
 | Sascha | Added a new class and worked on the GUI         | 22.05.2024 |
 | Manuel | Worked on WheaterWidget and implementing in GUI | 22.05.2024 |
+| Sascha | Added Item List Box with ther items             | 29.05.2024 |
+|        |                                                 |            |
+|        |                                                 |            |
+|        |                                                 |            |
 
 >>>>>>> e6ad25b22e0c8a50b3831a1ba2f61699d0f869bb
 
@@ -74,7 +78,7 @@ Thirst the basic of the Weather App then the "fetures" (not the nice to haves)
    - Wolkendecke
    - Strahlung
    - Bodenfeuchte
-   - CAPE
+   - CAPE (Convective Avalible Pontentian Energy)
    - Lifted Index
    - Grenzschichthöhe
    - Helizität
