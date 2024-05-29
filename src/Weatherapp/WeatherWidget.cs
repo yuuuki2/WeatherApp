@@ -3,16 +3,22 @@ using System.Windows;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using System.Text.RegularExpressions;
+using System.Linq;
+using System.Windows.Controls;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Weatherapp
 {
     public class WeatherWidget
     {
         private WebView2 webView;
+        private TextBlock TxBLocation; // TextBlock für die Anzeige des Standorts
 
-        public WeatherWidget(WebView2 webViewControl)
+        public WeatherWidget(WebView2 webViewControl, TextBlock textBlockLocation)
         {
             webView = webViewControl;
+            TxBLocation = textBlockLocation; // Referenz zum TextBlock zuweisen
             InitializeWebView();
         }
 
@@ -22,6 +28,7 @@ namespace Weatherapp
             webView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
             webView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
             webView.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
+            webView.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
             webView.Source = new Uri("https://www.meteoblue.com/de/wetter/widget/three/wien_%c3%96sterreich_2761369");
         }
 
@@ -31,7 +38,7 @@ namespace Weatherapp
             HandleUrlNavigation(newUrl);
         }
 
-        private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+        private void CoreWebView2_NewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
             e.Handled = true;
             string newUrl = e.Uri;
@@ -48,6 +55,19 @@ namespace Weatherapp
             }
         }
 
+        private async void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            if (e.IsSuccess)
+            {
+                // Warten auf das Laden der Seite
+                await Task.Delay(500); // Verzögerung zur Sicherstellung, dass die Seite vollständig geladen ist
+                string script = "document.querySelector('input.location').getAttribute('placeholder');";
+                string content = await webView.CoreWebView2.ExecuteScriptAsync(script);
+                string decodedContent = System.Text.Json.JsonSerializer.Deserialize<string>(content);
+                Application.Current.Dispatcher.Invoke(() => TxBLocation.Text = decodedContent); // Text im TextBlock aktualisieren
+            }
+        }
+
         private void HandleUrlNavigation(string url)
         {
             if (IsUrlBlocked(url))
@@ -55,15 +75,10 @@ namespace Weatherapp
                 return;
             }
 
-            if (url.Contains("/wetter/woche/index/"))
-            {
-                string newUrl = Regex.Replace(url, "/wetter/woche/index/", "/wetter/widget/three/");
-                Application.Current.Dispatcher.Invoke(() => webView.CoreWebView2.Navigate(newUrl));
-            }
-            else
-            {
-                Application.Current.Dispatcher.Invoke(() => webView.CoreWebView2.Navigate(url));
-            }
+            string finalUrl = url.Contains("/wetter/woche/index/") ?
+                Regex.Replace(url, "/wetter/woche/index/", "/wetter/widget/three/") : url;
+
+            Application.Current.Dispatcher.Invoke(() => webView.CoreWebView2.Navigate(finalUrl));
         }
 
         private bool IsUrlBlocked(string url)

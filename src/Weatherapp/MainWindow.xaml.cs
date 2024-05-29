@@ -23,9 +23,8 @@ namespace Weatherapp
         private WeatherWidget weatherWidget;
         public MainWindow()
         {
-
             InitializeComponent();
-            weatherWidget = new WeatherWidget(webView);
+            weatherWidget = new WeatherWidget(webView, TxBLocation);
             Loaded += MainWindow_Loaded;
         }
 
