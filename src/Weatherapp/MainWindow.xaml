@@ -31,5 +31,20 @@
         <Button x:Name="btnHome" Grid.Row="1" Grid.Column="0" Content="Home" FontSize="20"/>
         <Button x:Name="btnMap" Grid.Row="1" Grid.Column="3" Content="Map" FontSize="20"/>
         <wv2:WebView2 x:Name="webView" Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+        <ListBox x:Name="LibData" Grid.Row="3" Grid.ColumnSpan="4">
+            <ListBoxItem x:Name="LbiTemperature" Content="Temperature:" FontSize="25" Margin="0,30,0,0" />
+            <ListBoxItem x:Name="LbiCloudcover" Content="Cloud cover:" FontSize="25" Margin="0,10,0,0"/>
+            <ListBoxItem x:Name="LbiHumidity" Content="humidity:" FontSize="25" Margin="0,10,0,0"/>
+            <ListBoxItem x:Name="LbiAirpressure" Content="Air pressure:" FontSize="25" Margin="0,10,0,0"/>
+            <ListBoxItem x:Name="LbiWinddata" Content="Wind direction/speed:" FontSize="25" Margin="0,10,0,0"/>
+            <ListBoxItem x:Name="LbiRainfall" Content="Rainfall:" FontSize="25" Margin="0,10,0,0"/>
+            <ListBoxItem x:Name="LbiRadiation" Content="Radiation:" FontSize="25" Margin="0,10,0,0"/>
+            <ListBoxItem x:Name="LbiSoilmoisture" Content="Soil moisture:" FontSize="25" Margin="0,10,0,0"/>
+            <ListBoxItem x:Name="LbiCAPE" Content="CAPE (Convective Available Potential Energe):" FontSize="23" Margin="0,10,0,0"/>
+            <ListBoxItem x:Name="LbiHelicity" Content="Helicity:" FontSize="25" Margin="0,10,0,0"/>
+            <ListBoxItem x:Name="LibHeightfreezinglimit" Content="Height of the freezing limit:" FontSize="25" Margin="0,10,0,0"></ListBoxItem>
+
+        </ListBox>
     </Grid>
 </Window>
