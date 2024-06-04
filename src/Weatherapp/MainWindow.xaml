@@ -29,7 +29,9 @@
         <Label x:Name="lbLocation" Grid.Column="0" Content="Location:" FontSize="30" VerticalAlignment="Center" Grid.ColumnSpan="4" Margin="0,0,68,0"/>
         <TextBlock x:Name="TxBLocation" Grid.Column="1" Grid.ColumnSpan="3" FontSize="30" VerticalAlignment="Center"/>
         <Button x:Name="btnHome" Grid.Row="1" Grid.Column="0" Content="Home" FontSize="30" Margin="10,10,10,10"/>
+        <Button x:Name="btnLoad" Grid.Row="1" Grid.Column="1" Content="Load" FontSize="30" Margin="10,10,10,10" />
         <Button x:Name="btnMap" Grid.Row="1" Grid.Column="3" Content="Map" FontSize="30" Margin="10,10,10,10" Click="btnMap_Click"/>
+        <Button x:Name="btnSafe" Grid.Row="1" Grid.Column="2" Content="Safe" FontSize="30" Margin="10,10,10,10"/>
         <wv2:WebView2 x:Name="webView" Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
         <ListBox x:Name="LibData" Grid.Row="3" Grid.ColumnSpan="4">
