@@ -13,12 +13,12 @@ namespace Weatherapp
     public class WeatherWidget
     {
         private WebView2 webView;
-        private TextBlock TxBLocation; // TextBlock für die Anzeige des Standorts
+        private TextBlock TxBLocation;
 
         public WeatherWidget(WebView2 webViewControl, TextBlock textBlockLocation)
         {
             webView = webViewControl;
-            TxBLocation = textBlockLocation; // Referenz zum TextBlock zuweisen
+            TxBLocation = textBlockLocation; 
             InitializeWebView();
         }
 
@@ -59,8 +59,8 @@ namespace Weatherapp
         {
             if (e.IsSuccess)
             {
-                // Warten auf das Laden der Seite
-                await Task.Delay(500); // Verzögerung zur Sicherstellung, dass die Seite vollständig geladen ist
+                // Warten Laden der Seite
+                await Task.Delay(500); 
                 string script = "document.querySelector('input.location').getAttribute('placeholder');";
                 string content = await webView.CoreWebView2.ExecuteScriptAsync(script);
                 string decodedContent = System.Text.Json.JsonSerializer.Deserialize<string>(content);

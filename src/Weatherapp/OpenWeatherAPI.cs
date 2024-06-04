@@ -16,7 +16,7 @@ namespace Weatherapp
             string Description { get; set; }
             string Icon { get; set; }
 
-
+            
 
         }
 
