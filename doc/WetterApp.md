@@ -51,7 +51,7 @@ Thirst the basic of the Weather App then the "fetures" (not the nice to haves)
 | Manuel | Worked on WheaterWidget and implementing in GUI | 22.05.2024 |
 | Sascha | Added Item List Box with their items            | 29.05.2024 |
 | Sascha | Rework the GUI with Tabitem                     | 05.06.2024 |
-|        |                                                 |            |
+| Manuel | updatet OpenWeatherAPI.cs, MainWindow.xaml & .cs| 05.06.2024 |
 |        |                                                 |            |
 
 >>>>>>> e6ad25b22e0c8a50b3831a1ba2f61699d0f869bb
