@@ -18,6 +18,7 @@ namespace Weatherapp
 {
     public partial class MainWindow : Window
     {
+        private WeatherWidget weatherWidget;
         private DispatcherTimer timer;
         private string LastLocation;
 
@@ -36,6 +37,7 @@ namespace Weatherapp
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Maximized;
+            weatherWidget = new WeatherWidget(weatherWebView, TxBLocation);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
