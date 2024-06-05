@@ -34,10 +34,5 @@ namespace Weatherapp
             this.WindowState = WindowState.Maximized;
         }
 
-
-        private void btnMap_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
