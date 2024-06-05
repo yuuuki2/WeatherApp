@@ -50,7 +50,7 @@ Thirst the basic of the Weather App then the "fetures" (not the nice to haves)
 | Sascha | Added a new class and worked on the GUI         | 22.05.2024 |
 | Manuel | Worked on WheaterWidget and implementing in GUI | 22.05.2024 |
 | Sascha | Added Item List Box with their items            | 29.05.2024 |
-|        |                                                 |            |
+| Sascha | Rework the GUI with Tabitem                     | 05.06.2024 |
 |        |                                                 |            |
 |        |                                                 |            |
 
@@ -59,7 +59,7 @@ Thirst the basic of the Weather App then the "fetures" (not the nice to haves)
 # Checklist
 
 * [x] the basic of the Weather App (search and find)
-* [ ] Finish the GUI
+* [x] Finish the GUI
 * [ ] All Must Haves are done
 * [ ] Polish the Programm
 
