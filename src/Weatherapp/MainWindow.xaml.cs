@@ -50,10 +50,9 @@ namespace Weatherapp
 
         private void UpdateWeatherDisplay()
         {
-            string cityName = TxBLocation.Text;  // Stadtnamen aus dem TextBlock holen
-            var weatherData = OpenWeatherAPI.FetchWeatherData(cityName).Result;  // Asynchronen Aufruf synchron machen für dieses Beispiel
-            //if (weatherData != null)
-            if (1==1)
+            string cityName = TxBLocation.Text; 
+            var weatherData = OpenWeatherAPI.FetchWeatherData(cityName).Result;
+            if (weatherData != null)
             {
                 Dispatcher.Invoke(() =>
                 {
@@ -74,6 +73,11 @@ namespace Weatherapp
                     LbiPM25.Content = $"PM2.5: {weatherData.PM2_5} μg/m3";
                     LbiPM10.Content = $"PM10: {weatherData.PM10} μg/m3";
                 });
+            }
+            else
+            {
+                // Fehlerbehandlung, falls weatherData null ist oder unvollständige Daten enthält
+                MessageBox.Show("Weather data is not available or incomplete.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
