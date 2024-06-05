@@ -52,7 +52,8 @@ namespace Weatherapp
         {
             string cityName = TxBLocation.Text;  // Stadtnamen aus dem TextBlock holen
             var weatherData = OpenWeatherAPI.FetchWeatherData(cityName).Result;  // Asynchronen Aufruf synchron machen für dieses Beispiel
-            if (weatherData != null)
+            //if (weatherData != null)
+            if (1==1)
             {
                 Dispatcher.Invoke(() =>
                 {
