@@ -12,20 +12,24 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Weatherapp
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private WeatherWidget weatherWidget;
+        private DispatcherTimer timer;
+        private string LastLocation;
+
+
         public MainWindow()
         {
             InitializeComponent();
-            weatherWidget = new WeatherWidget(webView, TxBLocation);
             Loaded += MainWindow_Loaded;
+            LastLocation = TxBLocation.Text;
+            timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+            timer.Tick += Timer_Tick;
+            timer.Start();
         }
 
         // Big windowww
@@ -34,10 +38,42 @@ namespace Weatherapp
             this.WindowState = WindowState.Maximized;
         }
 
-
-        private void btnMap_Click(object sender, RoutedEventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
+            if (TxBLocation.Text != LastLocation)
+            {
+                LastLocation = TxBLocation.Text;
+                OpenWeatherAPI.FetchWeatherData(LastLocation);
+                UpdateWeatherDisplay();
+            }
+        }
 
+        private void UpdateWeatherDisplay()
+        {
+            string cityName = TxBLocation.Text;  // Stadtnamen aus dem TextBlock holen
+            var weatherData = OpenWeatherAPI.FetchWeatherData(cityName).Result;  // Asynchronen Aufruf synchron machen für dieses Beispiel
+            if (weatherData != null)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    LbiTemperature.Content = $"Temperature: {weatherData.Temperature} °C";
+                    LbiHumidity.Content = $"Humidity: {weatherData.Humidity}%";
+                    LbiAirpressure.Content = $"Air pressure: {weatherData.Pressure} hPa";
+                    LbiWinddata.Content = $"Wind: {weatherData.WindSpeed} m/s, {weatherData.WindDirection}°";
+                    LbiCloudcover.Content = $"Cloud cover: {weatherData.CloudCover}";
+                    LbiVisibility.Content = $"Visibility: {weatherData.Visibility} meters";
+                    LbiSunrise.Content = $"Sunrise: {weatherData.Sunrise}";
+                    LbiSunset.Content = $"Sunset: {weatherData.Sunset}";
+                    LbiAQI.Content = $"Air Quality Index: {weatherData.AirQualityIndex}";
+                    LbiCO.Content = $"CO: {weatherData.CO} μg/m3";
+                    LbiNO.Content = $"NO: {weatherData.NO} μg/m3";
+                    LbiNO2.Content = $"NO2: {weatherData.NO2} μg/m3";
+                    LbiO3.Content = $"O3: {weatherData.O3} μg/m3";
+                    LbiSO2.Content = $"SO2: {weatherData.SO2} μg/m3";
+                    LbiPM25.Content = $"PM2.5: {weatherData.PM2_5} μg/m3";
+                    LbiPM10.Content = $"PM10: {weatherData.PM10} μg/m3";
+                });
+            }
         }
     }
 }
