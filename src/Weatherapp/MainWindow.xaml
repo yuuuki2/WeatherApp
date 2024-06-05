@@ -14,9 +14,9 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="6*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -26,27 +26,40 @@
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
 
-        <Label x:Name="lbLocation" Grid.Column="0" Content="Location:" FontSize="30" VerticalAlignment="Center" Grid.ColumnSpan="4" Margin="0,0,68,0"/>
-        <TextBlock x:Name="TxBLocation" Grid.Column="1" Grid.ColumnSpan="3" FontSize="30" VerticalAlignment="Center"/>
-        <Button x:Name="btnHome" Grid.Row="1" Grid.Column="0" Content="Home" FontSize="30" Margin="10,10,10,10"/>
-        <Button x:Name="btnLoad" Grid.Row="1" Grid.Column="1" Content="Load" FontSize="30" Margin="10,10,10,10" />
-        <Button x:Name="btnMap" Grid.Row="1" Grid.Column="3" Content="Map" FontSize="30" Margin="10,10,10,10" Click="btnMap_Click"/>
-        <Button x:Name="btnSafe" Grid.Row="1" Grid.Column="2" Content="Safe" FontSize="30" Margin="10,10,10,10"/>
+        <Label x:Name="lbLocation" Grid.Row="0" Grid.Column="0" Content="Location:" FontSize="30" VerticalAlignment="Center" Grid.ColumnSpan="4" Background="LightGray" Margin="10"/>
+        <TextBlock x:Name="TxBLocation" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" FontSize="30" VerticalAlignment="Center" Background="LightGray" Margin="10"/>
+
+        <Button x:Name="btnHome" Grid.Row="1" Grid.Column="0" Content="Home" FontSize="30" Margin="10"/>
+        <Button x:Name="btnLoad" Grid.Row="1" Grid.Column="1" Content="Load" FontSize="30" Margin="10"/>
+        <Button x:Name="btnSafe" Grid.Row="1" Grid.Column="2" Content="Safe" FontSize="30" Margin="10"/>
+        <Button x:Name="btnMap" Grid.Row="1" Grid.Column="3" Content="Map" FontSize="30" Margin="10" Click="btnMap_Click"/>
+
         <wv2:WebView2 x:Name="webView" Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
-        <ListBox x:Name="LibData" Grid.Row="3" Grid.ColumnSpan="4">
-            <ListBoxItem x:Name="LbiTemperature" Content="Temperature:" FontSize="25" Margin="0,30,0,0" Background="LightGray" />
-            <ListBoxItem x:Name="LbiCloudcover" Content="Cloud cover:" FontSize="25" />
-            <ListBoxItem x:Name="LbiHumidity" Content="humidity:" FontSize="25"  Background="LightGray"/>
-            <ListBoxItem x:Name="LbiAirpressure" Content="Air pressure:" FontSize="25" />
-            <ListBoxItem x:Name="LbiWinddata" Content="Wind direction/speed:" FontSize="25"  Background="LightGray"/>
-            <ListBoxItem x:Name="LbiRainfall" Content="Rainfall:" FontSize="25" />
-            <ListBoxItem x:Name="LbiRadiation" Content="Radiation:" FontSize="25"  Background="LightGray"/>
-            <ListBoxItem x:Name="LbiSoilmoisture" Content="Soil moisture:" FontSize="25" />
-            <ListBoxItem x:Name="LbiCAPE" Content="CAPE (Convective Available Potential Energe):" FontSize="23"  Background="LightGray"/>
-            <ListBoxItem x:Name="LbiHelicity" Content="Helicity:" FontSize="25" />
-            <ListBoxItem x:Name="LibHeightfreezinglimit" Content="Height of the freezing limit:" FontSize="25"  Background="LightGray"/>
+        <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4">
+            <TabItem Header="Home" FontSize="30">
+                <StackPanel>
+                    <ListBox x:Name="LibData" Height="157">
+                        <ListBoxItem x:Name="LbiTemperature" Content="Temperature:" FontSize="25" Margin="0,30,0,0" Background="LightGray"/>
+                        <ListBoxItem x:Name="LbiCloudcover" Content="Cloud cover:" FontSize="25"/>
+                        <ListBoxItem x:Name="LbiHumidity" Content="Humidity:" FontSize="25" Background="LightGray"/>
+                        <ListBoxItem x:Name="LbiAirpressure" Content="Air pressure:" FontSize="25"/>
+                        <ListBoxItem x:Name="LbiWinddata" Content="Wind direction/speed:" FontSize="25" Background="LightGray"/>
+                        <ListBoxItem x:Name="LbiRainfall" Content="Rainfall:" FontSize="25"/>
+                        <ListBoxItem x:Name="LbiRadiation" Content="Radiation:" FontSize="25" Background="LightGray"/>
+                        <ListBoxItem x:Name="LbiSoilmoisture" Content="Soil moisture:" FontSize="25"/>
+                        <ListBoxItem x:Name="LbiCAPE" Content="CAPE (Convective Available Potential Energy):" FontSize="23" Background="LightGray"/>
+                        <ListBoxItem x:Name="LbiHelicity" Content="Helicity:" FontSize="25"/>
+                        <ListBoxItem x:Name="LibHeightfreezinglimit" Content="Height of the freezing limit:" FontSize="25" Background="LightGray"/>
+                    </ListBox>
+                </StackPanel>
+            </TabItem>
 
-        </ListBox>
+            <TabItem Header="Map" FontSize="30" >
+                <StackPanel Orientation="Vertical" Margin="10">
+                    <Label Content="MAP" FontSize="100"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
