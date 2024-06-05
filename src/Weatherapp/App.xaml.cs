@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Weatherapp
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            Logging.Log("Application started.");
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Logging.Log("Application exiting.");
+            base.OnExit(e);
+        }
     }
 }

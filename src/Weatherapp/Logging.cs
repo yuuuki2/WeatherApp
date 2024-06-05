@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 
 public static class Logging
 {
@@ -9,54 +8,25 @@ public static class Logging
 
     static Logging()
     {
-        // Initialisiere
-        try
+        if (!File.Exists(logFile))
         {
-            if (!File.Exists(logFile))
-            {
-                File.WriteAllText(logFile, $"Log started on {DateTime.Now}\n");
-            }
-        }
-        catch (Exception ex)
-        {
-            HandleLoggingFailure($"Failed to initialize logging: {ex.Message}");
+            File.WriteAllText(logFile, $"Log started on {DateTime.Now}\n");
         }
     }
 
     public static void Log(string message)
     {
-        try
+        lock (lockObj)
         {
-            lock (lockObj)
-            {
-                File.AppendAllText(logFile, $"{DateTime.Now}: {message}\n");
-            }
-        }
-        catch (Exception ex)
-        {
-            HandleLoggingFailure($"Failed to log message: {message} - Exception: {ex.Message}");
+            File.AppendAllText(logFile, $"{DateTime.Now}: {message}\n");
         }
     }
 
     public static void LogException(string message, Exception ex)
     {
-        Log($"ERROR: {message} - Exception: {ex.Message}\nStack Trace: {ex.StackTrace}");
-    }
-
-    private static void HandleLoggingFailure(string error)
-    {
-        // Backup log file path
-        var backupLogFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "application_backup.log");
-        try
+        lock (lockObj)
         {
-            lock (lockObj)
-            {
-                File.AppendAllText(backupLogFile, $"{DateTime.Now}: {error}\n");
-            }
-        }
-        catch
-        {
-            //sending email if
+            File.AppendAllText(logFile, $"{DateTime.Now}: ERROR: {message} - Exception: {ex.Message}\nStack Trace: {ex.StackTrace}\n");
         }
     }
 }

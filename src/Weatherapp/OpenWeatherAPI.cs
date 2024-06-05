@@ -51,6 +51,7 @@ public class OpenWeatherAPI
 
     public static async Task<WeatherData> FetchWeatherData(string cityName)
     {
+        Logging.Log("Heartbeat: Fetching weather data.");
         using (HttpClient client = new HttpClient())
         {
             try

@@ -1,62 +1,106 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Threading.Tasks;
 
 namespace Weatherapp
 {
     public partial class MainWindow : Window
     {
-        private WeatherWidget weatherWidget;
         private DispatcherTimer timer;
-        private string LastLocation;
-
+        private DispatcherTimer heartbeatTimer;
+        private string lastLocation;
+        private WeatherWidget? weatherWidget;
+        private DateTime lastUpdateTime = DateTime.MinValue;
 
         public MainWindow()
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
-            LastLocation = TxBLocation.Text;
-            timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+            Unloaded += MainWindow_Unloaded;
+            lastLocation = TxBLocation.Text;
+
+            // Main timer
+            timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(300) };
             timer.Tick += Timer_Tick;
             timer.Start();
+
+            // Heartbeat timer
+            heartbeatTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10) };
+            heartbeatTimer.Tick += HeartbeatTimer_Tick;
+            heartbeatTimer.Start();
+            Logging.Log("MainWindow initialized and timer started.");
         }
 
-        // Big windowww
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Maximized;
-            weatherWidget = new WeatherWidget(weatherWebView, TxBLocation);
+            InitializeWeatherWidget();
+            await FetchWeatherDataIfNeeded(); // Initial data fetch if needed
+            Logging.Log("MainWindow loaded and initial weather data fetching started.");
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (TxBLocation.Text != LastLocation)
+            Logging.Log("MainWindow unloaded and timers stopped.");
+            timer.Stop();
+            heartbeatTimer.Stop();
+        }
+
+        private void InitializeWeatherWidget()
+        {
+            weatherWidget = new WeatherWidget(weatherWebView, TxBLocation);
+            Logging.Log("Weather widget initialized.");
+        }
+
+        private void HeartbeatTimer_Tick(object sender, EventArgs e)
+        {
+            Logging.Log("Heartbeat check: MainWindow is responsive.");
+        }
+
+        private async void Timer_Tick(object sender, EventArgs e)
+        {
+            Logging.Log("Timer tick occurred.");
+            if (TxBLocation.Text != lastLocation)
             {
-                LastLocation = TxBLocation.Text;
-                OpenWeatherAPI.FetchWeatherData(LastLocation);
-                UpdateWeatherDisplay();
+                Logging.Log($"Location changed from {lastLocation} to {TxBLocation.Text}.");
+                lastLocation = TxBLocation.Text;
+                await FetchWeatherDataIfNeeded();
             }
         }
 
-        private void UpdateWeatherDisplay()
+        private async Task FetchWeatherDataIfNeeded()
         {
-            string cityName = TxBLocation.Text; 
-            var weatherData = OpenWeatherAPI.FetchWeatherData(cityName).Result;
-            if (weatherData != null)
+            if (!string.IsNullOrEmpty(TxBLocation.Text) && ShouldFetchData())
             {
-                Dispatcher.Invoke(() =>
+                await FetchWeatherDataAsync(TxBLocation.Text);
+            }
+        }
+
+        private async Task FetchWeatherDataAsync(string location)
+        {
+            try
+            {
+                var weatherData = await OpenWeatherAPI.FetchWeatherData(location);
+                if (weatherData != null)
+                {
+                    UpdateWeatherDisplay(weatherData);
+                    Logging.Log($"Fetched weather data for {location}.");
+                    lastUpdateTime = DateTime.Now;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logging.LogException("Error fetching weather data", ex);
+            }
+        }
+
+        private void UpdateWeatherDisplay(WeatherData weatherData)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                try
                 {
                     LbiTemperature.Content = $"Temperature: {weatherData.Temperature} °C";
                     LbiHumidity.Content = $"Humidity: {weatherData.Humidity}%";
@@ -74,13 +118,20 @@ namespace Weatherapp
                     LbiSO2.Content = $"SO2: {weatherData.SO2} μg/m3";
                     LbiPM25.Content = $"PM2.5: {weatherData.PM2_5} μg/m3";
                     LbiPM10.Content = $"PM10: {weatherData.PM10} μg/m3";
-                });
-            }
-            else
-            {
-                // Fehlerbehandlung, falls weatherData null ist oder unvollständige Daten enthält
-                MessageBox.Show("Weather data is not available or incomplete.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+                    Logging.Log("Weather display updated.");
+                }
+                catch (Exception ex)
+                {
+                    Logging.LogException("Failed to update weather display", ex);
+                    MessageBox.Show("Failed to update weather display.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            });
+        }
+
+        private bool ShouldFetchData()
+        {
+            // Limits data fetching to once per hour or on significant location change
+            return DateTime.Now.Subtract(lastUpdateTime).TotalHours >= 1;
         }
     }
 }

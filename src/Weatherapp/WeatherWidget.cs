@@ -4,9 +4,9 @@ using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using System.Text.RegularExpressions;
 using System.Linq;
-using System.Windows.Controls;
-using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace Weatherapp
 {
@@ -14,23 +14,45 @@ namespace Weatherapp
     {
         private WebView2 webView;
         private TextBlock TxBLocation;
+        private DispatcherTimer heartbeatTimer;
 
         public WeatherWidget(WebView2 webViewControl, TextBlock textBlockLocation)
         {
+            heartbeatTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10) };
+            heartbeatTimer.Tick += HeartbeatTimer_Tick;
+            heartbeatTimer.Start();
+
+            Logging.Log("WeatherWidget initialized and Heartbeat timer started.");
+
             webView = webViewControl;
-            TxBLocation = textBlockLocation; 
+            TxBLocation = textBlockLocation;
             InitializeWebView();
+        }
+
+        private void HeartbeatTimer_Tick(object sender, EventArgs e)
+        {
+            Logging.Log("Heartbeat check: WeatherWidget is responsive.");
         }
 
         private async void InitializeWebView()
         {
-            await webView.EnsureCoreWebView2Async(null);
-            webView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
-            webView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
-            webView.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
-            webView.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
-            webView.Source = new Uri("https://www.meteoblue.com/de/wetter/widget/three/wien_%c3%96sterreich_2761369");
+            try
+            {
+                await webView.EnsureCoreWebView2Async(null);
+                webView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
+                webView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+                webView.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
+                webView.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+                webView.Source = new Uri("https://www.meteoblue.com/de/wetter/widget/three/wien_%c3%96sterreich_2761369");
+                Logging.Log("WebView initialized successfully.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initializing WebView: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Logging.LogException("Error initializing WebView", ex);
+            }
         }
+
 
         private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
@@ -59,12 +81,18 @@ namespace Weatherapp
         {
             if (e.IsSuccess)
             {
-                // Warten Laden der Seite
-                await Task.Delay(500); 
-                string script = "document.querySelector('input.location').getAttribute('placeholder');";
-                string content = await webView.CoreWebView2.ExecuteScriptAsync(script);
-                string decodedContent = System.Text.Json.JsonSerializer.Deserialize<string>(content);
-                Application.Current.Dispatcher.Invoke(() => TxBLocation.Text = decodedContent); // Text im TextBlock aktualisieren
+                try
+                {
+                    await Task.Delay(500);
+                    string script = "document.querySelector('input.location').getAttribute('placeholder');";
+                    string content = await webView.CoreWebView2.ExecuteScriptAsync(script);
+                    string decodedContent = System.Text.Json.JsonSerializer.Deserialize<string>(content);
+                    Application.Current.Dispatcher.Invoke(() => TxBLocation.Text = decodedContent);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error during NavigationCompleted: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
