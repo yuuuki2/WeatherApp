@@ -1,15 +1,14 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using System.Threading.Tasks;
 
 namespace Weatherapp
 {
     public partial class MainWindow : Window
     {
         private DispatcherTimer timer;
-        private DispatcherTimer heartbeatTimer;
         private string lastLocation;
         private WeatherWidget? weatherWidget;
         private DateTime lastUpdateTime = DateTime.MinValue;
@@ -18,18 +17,11 @@ namespace Weatherapp
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
-            Unloaded += MainWindow_Unloaded;
             lastLocation = TxBLocation.Text;
 
-            // Main timer
-            timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(300) };
+            timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10) };
             timer.Tick += Timer_Tick;
             timer.Start();
-
-            // Heartbeat timer
-            heartbeatTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10) };
-            heartbeatTimer.Tick += HeartbeatTimer_Tick;
-            heartbeatTimer.Start();
             Logging.Log("MainWindow initialized and timer started.");
         }
 
@@ -37,15 +29,7 @@ namespace Weatherapp
         {
             this.WindowState = WindowState.Maximized;
             InitializeWeatherWidget();
-            await FetchWeatherDataIfNeeded(); // Initial data fetch if needed
-            Logging.Log("MainWindow loaded and initial weather data fetching started.");
-        }
-
-        private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Logging.Log("MainWindow unloaded and timers stopped.");
-            timer.Stop();
-            heartbeatTimer.Stop();
+            await FetchWeatherDataIfNeeded();
         }
 
         private void InitializeWeatherWidget()
@@ -54,17 +38,10 @@ namespace Weatherapp
             Logging.Log("Weather widget initialized.");
         }
 
-        private void HeartbeatTimer_Tick(object sender, EventArgs e)
-        {
-            Logging.Log("Heartbeat check: MainWindow is responsive.");
-        }
-
         private async void Timer_Tick(object sender, EventArgs e)
         {
-            Logging.Log("Timer tick occurred.");
             if (TxBLocation.Text != lastLocation)
             {
-                Logging.Log($"Location changed from {lastLocation} to {TxBLocation.Text}.");
                 lastLocation = TxBLocation.Text;
                 await FetchWeatherDataIfNeeded();
             }
@@ -87,12 +64,15 @@ namespace Weatherapp
                 {
                     UpdateWeatherDisplay(weatherData);
                     Logging.Log($"Fetched weather data for {location}.");
-                    lastUpdateTime = DateTime.Now;
+                }
+                else
+                {
+                    Logging.Log("No data received from API.");
                 }
             }
             catch (Exception ex)
             {
-                Logging.LogException("Error fetching weather data", ex);
+                Logging.LogException("Error during API call", ex);
             }
         }
 
@@ -118,19 +98,31 @@ namespace Weatherapp
                     LbiSO2.Content = $"SO2: {weatherData.SO2} μg/m3";
                     LbiPM25.Content = $"PM2.5: {weatherData.PM2_5} μg/m3";
                     LbiPM10.Content = $"PM10: {weatherData.PM10} μg/m3";
-                    Logging.Log("Weather display updated.");
+
+                    // Überprüfe, ob Umweltdaten vorhanden sind
+                    if (weatherData.AirQualityIndex > 0 || weatherData.CO > 0)
+                    {
+                        LbiAQI.Content = $"Air Quality Index: {weatherData.AirQualityIndex}";
+                        LbiCO.Content = $"CO: {weatherData.CO} μg/m3";
+                    }
+                    else
+                    {
+                        LbiAQI.Content = "Air Quality Index: Data not available";
+                        LbiCO.Content = "CO: Data not available";
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogException("Failed to update weather display", ex);
+                    Logging.LogException("Failed to update UI with weather data", ex);
                     MessageBox.Show("Failed to update weather display.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
         }
 
+
+
         private bool ShouldFetchData()
         {
-            // Limits data fetching to once per hour or on significant location change
             return DateTime.Now.Subtract(lastUpdateTime).TotalHours >= 1;
         }
     }

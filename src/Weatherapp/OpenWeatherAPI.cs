@@ -14,8 +14,6 @@ public class WeatherData
     public int WindDirection { get; set; }
     public string CloudCover { get; set; }
     public int Visibility { get; set; }
-    public double Rainfall { get; set; }
-    public double Snowfall { get; set; }
     public DateTime Sunrise { get; set; }
     public DateTime Sunset { get; set; }
     public string Country { get; set; }
@@ -34,6 +32,7 @@ public class WeatherData
     // Vorhersagedaten
     public List<ForecastData> Forecasts { get; set; }
 }
+
 
 public class ForecastData
 {
@@ -64,29 +63,39 @@ public class OpenWeatherAPI
                     dynamic data = JsonConvert.DeserializeObject(json);
                     var weatherData = new WeatherData
                     {
-                        Temperature = data.main.temp,
-                        Humidity = data.main.humidity,
-                        Pressure = data.main.pressure,
-                        WindSpeed = data.wind.speed,
-                        WindDirection = data.wind.deg,
+                        Temperature = (double)data.main.temp,
+                        Humidity = (int)data.main.humidity,
+                        Pressure = (int)data.main.pressure,
+                        WindSpeed = (double)data.wind.speed,
+                        WindDirection = (int)data.wind.deg,
                         CloudCover = data.weather[0].description,
-                        Visibility = data.visibility,
+                        Visibility = (int)data.visibility,
                         Sunrise = UnixTimeStampToDateTime(data.sys.sunrise),
                         Sunset = UnixTimeStampToDateTime(data.sys.sunset),
                         Country = data.sys.country,
                         CityName = data.name,
-                        Forecasts = await FetchForecastData(cityName),
+                        AirQualityIndex = data.air_quality?.aqi ?? 0,  // Verwende den Null-Coalescing-Operator, um Standardwerte zu setzen
+                        CO = data.air_quality?.co ?? 0,
+                        NO = data.air_quality?.no ?? 0,
+                        NO2 = data.air_quality?.no2 ?? 0,
+                        O3 = data.air_quality?.o3 ?? 0,
+                        SO2 = data.air_quality?.so2 ?? 0,
+                        PM2_5 = data.air_quality?.pm2_5 ?? 0,
+                        PM10 = data.air_quality?.pm10 ?? 0,
+                        Forecasts = await FetchForecastData(cityName)
                     };
                     return weatherData;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ein Fehler ist aufgetreten: {ex.Message}");
+                Logging.LogException("Error fetching weather data", ex);
             }
             return null;
         }
     }
+
+
 
     public static async Task<List<ForecastData>> FetchForecastData(string cityName)
     {
@@ -121,10 +130,26 @@ public class OpenWeatherAPI
         }
     }
 
-    private static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+    private static DateTime UnixTimeStampToDateTime(dynamic unixTimeStamp)
     {
-        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-        return dateTime;
+        if (unixTimeStamp == null)
+        {
+            Logging.Log("Unix timestamp is null, returning DateTime.MinValue");
+            return DateTime.MinValue;
+        }
+
+        if (double.TryParse(unixTimeStamp.ToString(), out double timeStamp))
+        {
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(timeStamp).ToLocalTime();
+            return dateTime;
+        }
+        else
+        {
+            Logging.Log($"Invalid unix timestamp: {unixTimeStamp}");
+            return DateTime.MinValue;
+        }
     }
+
 }
+
