@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.IO;
 
 public class WeatherData
 {
@@ -47,6 +48,46 @@ public class OpenWeatherAPI
     private const string ForecastUrl = "https://api.openweathermap.org/data/2.5/forecast";
     private const string PollutionUrl = "https://api.openweathermap.org/data/2.5/air_pollution";
     private const string GeocodeUrl = "http://api.openweathermap.org/geo/1.0/direct";
+
+    public static void SerializeWeatherData(WeatherData weatherData)
+    {
+        try
+        {
+            // Pfad, unter dem die Daten gespeichert werden sollen
+            string filePath = "path/to/serialized/data.json";
+
+            // Serialisiere das WeatherData-Objekt in einen JSON-String
+            string serializedData = JsonConvert.SerializeObject(weatherData);
+
+            // Schreibe den serialisierten JSON-String in eine Datei
+            File.WriteAllText(filePath, serializedData);
+
+            // Protokolliere den Vorgang
+            Logging.Log($"Weather data serialized and saved to {filePath}.");
+        }
+        catch (Exception ex)
+        {
+            // Fehlerbehandlung hier, z.B. Protokollieren des Fehlers
+            Logging.LogException("Error while serializing and saving weather data", ex);
+        }
+    }
+
+    public static WeatherData DeserializeWeatherData(string serializedData)
+    {
+        try
+        {
+            // Deserialisieren des JSON-Strings in ein WeatherData-Objekt
+            WeatherData deserializedData = JsonConvert.DeserializeObject<WeatherData>(serializedData);
+            return deserializedData;
+        }
+        catch (Exception ex)
+        {
+            Logging.LogException("Error during deserialization", ex);
+            return null;
+        }
+    }
+
+
 
     public static async Task<WeatherData> FetchWeatherData(string cityName)
     {
@@ -183,4 +224,5 @@ public class OpenWeatherAPI
             return DateTime.MinValue;
         }
     }
+
 }

@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using System.IO;
+
 
 namespace Weatherapp
 {
@@ -143,5 +145,56 @@ namespace Weatherapp
         {
             return DateTime.Now.Subtract(lastUpdateTime).TotalHours >= 1;
         }
+
+        private void btnLoad_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Hier den Pfad zur Datei angeben, aus der die Daten geladen werden soll
+                string filePath = "path/to/serialized/data.json";
+
+                // Den serialisierten Datenstring aus der Datei laden
+                string serializedData = File.ReadAllText(filePath);
+
+
+                WeatherData weatherData = OpenWeatherAPI.DeserializeWeatherData(serializedData);
+
+            }
+            catch (Exception ex)
+            {
+    
+                MessageBox.Show($"Error loading weather data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+        private async void btnSafe_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(TxBLocation.Text))
+                {
+                    WeatherData weatherData = await OpenWeatherAPI.FetchWeatherData(TxBLocation.Text);
+                    if (weatherData != null)
+                    {
+                        OpenWeatherAPI.SerializeWeatherData(weatherData);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Weather data could not be fetched.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please enter a location first.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Fehlerbehandlung, falls beim Serialisieren und Speichern ein Fehler auftritt
+                MessageBox.Show($"Error saving weather data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
     }
 }
