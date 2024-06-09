@@ -10,8 +10,8 @@ namespace Weatherapp
     public class MapWidget
     {
         private CoreWebView2 webView;
-        private string currentMapUrl;
-        private const string GeoNamesApiKey = "Oniichan187"; // geoname username = api key
+        private string currentMapUrl; // Feldvariable zum Speichern der aktuellen Map-URL
+        private const string GeoNamesApiKey = "Oniichan187"; // Setze hier deinen GeoNames-Benutzernamen ein
 
         public MapWidget(CoreWebView2 webView)
         {
@@ -30,7 +30,7 @@ namespace Weatherapp
             if (coordinates != null)
             {
                 string formattedLocation = FormatLocationForUrl(location, coordinates.Value.geocode);
-                Logging.Log($"Formatted location for URL: {formattedLocation}"); // Logt formatierten Ort
+                Logging.Log($"Formatted location for URL: {formattedLocation}"); // Loggt den formatierten Ort
                 UpdateMapLocation(coordinates.Value.lat, coordinates.Value.lon, formattedLocation);
             }
             else
@@ -50,7 +50,7 @@ namespace Weatherapp
                 {
                     string json = await response.Content.ReadAsStringAsync();
                     dynamic data = JsonConvert.DeserializeObject(json);
-                    Logging.Log($"Geocode API response: {json}"); // logt API-Antwort
+                    Logging.Log($"Geocode API response: {json}"); // Protokolliert die gesamte API-Antwort
                     if (data.geonames.Count > 0)
                     {
                         double lat = (double)data.geonames[0].lat;
