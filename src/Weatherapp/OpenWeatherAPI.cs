@@ -41,134 +41,88 @@ public class ForecastData
     public string Description { get; set; }
 }
 
-public class OpenWeatherAPI
+public static class OpenWeatherAPI
 {
-    private const string ApiKey = "04e6b4a61db8e1045007e838910a6321";
+    private const string ApiKey = "YOUR_API_KEY";
     private const string WeatherUrl = "https://api.openweathermap.org/data/2.5/weather";
     private const string ForecastUrl = "https://api.openweathermap.org/data/2.5/forecast";
     private const string PollutionUrl = "https://api.openweathermap.org/data/2.5/air_pollution";
     private const string GeocodeUrl = "http://api.openweathermap.org/geo/1.0/direct";
 
-    public static void SerializeWeatherData(WeatherData weatherData)
+    public static string GetFilePath()
     {
-        try
-        {
-            // Pfad, unter dem die Daten gespeichert werden sollen
-            string filePath = "path/to/serialized/data.json";
-
-            // Serialisiere das WeatherData-Objekt in einen JSON-String
-            string serializedData = JsonConvert.SerializeObject(weatherData);
-
-            // Schreibe den serialisierten JSON-String in eine Datei
-            File.WriteAllText(filePath, serializedData);
-
-            // Protokolliere den Vorgang
-            Logging.Log($"Weather data serialized and saved to {filePath}.");
-        }
-        catch (Exception ex)
-        {
-            // Fehlerbehandlung hier, z.B. Protokollieren des Fehlers
-            Logging.LogException("Error while serializing and saving weather data", ex);
-        }
+        string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WeatherApp");
+        Directory.CreateDirectory(folderPath); // Ensure the directory exists
+        return Path.Combine(folderPath, "Data.json");
     }
-
-    public static WeatherData DeserializeWeatherData(string serializedData)
-    {
-        try
-        {
-            // Deserialisieren des JSON-Strings in ein WeatherData-Objekt
-            WeatherData deserializedData = JsonConvert.DeserializeObject<WeatherData>(serializedData);
-            return deserializedData;
-        }
-        catch (Exception ex)
-        {
-            Logging.LogException("Error during deserialization", ex);
-            return null;
-        }
-    }
-
-
 
     public static async Task<WeatherData> FetchWeatherData(string cityName)
     {
-        Logging.Log("Heartbeat: Fetching weather data.");
+        var coordinates = await FetchCoordinates(cityName);
+        if (coordinates == null) return null;
+
         using (HttpClient client = new HttpClient())
         {
             try
             {
-                // Geocode city name to coordinates
-                var coords = await GetCoordinatesForCity(client, cityName);
-                if (coords == null) return null;
-
-                // Fetch weather data
-                string weatherUrl = $"{WeatherUrl}?lat={coords.Item1}&lon={coords.Item2}&appid={ApiKey}&units=metric";
-                HttpResponseMessage response = await client.GetAsync(weatherUrl);
+                string url = $"{WeatherUrl}?lat={coordinates.Item1}&lon={coordinates.Item2}&appid={ApiKey}&units=metric";
+                HttpResponseMessage response = await client.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
                     string json = await response.Content.ReadAsStringAsync();
                     dynamic data = JsonConvert.DeserializeObject(json);
-                    var weatherData = new WeatherData
+                    WeatherData weatherData = new WeatherData
                     {
-                        Temperature = (double)data.main.temp,
-                        Humidity = (int)data.main.humidity,
-                        Pressure = (int)data.main.pressure,
-                        WindSpeed = (double)data.wind.speed,
-                        WindDirection = (int)data.wind.deg,
+                        Temperature = data.main.temp,
+                        Humidity = data.main.humidity,
+                        Pressure = data.main.pressure,
+                        WindSpeed = data.wind.speed,
+                        WindDirection = data.wind.deg,
                         CloudCover = data.weather[0].description,
-                        Visibility = (int)data.visibility,
-                        Sunrise = UnixTimeStampToDateTime(data.sys.sunrise),
-                        Sunset = UnixTimeStampToDateTime(data.sys.sunset),
+                        Visibility = data.visibility,
+                        Sunrise = UnixTimeStampToDateTime((long)data.sys.sunrise),
+                        Sunset = UnixTimeStampToDateTime((long)data.sys.sunset),
                         Country = data.sys.country,
-                        CityName = data.name,
-                        Forecasts = await FetchForecastData(cityName)
+                        CityName = data.name
                     };
-
-                    // Fetch air pollution data
-                    string pollutionUrl = $"{PollutionUrl}?lat={coords.Item1}&lon={coords.Item2}&appid={ApiKey}";
-                    response = await client.GetAsync(pollutionUrl);
-                    json = await response.Content.ReadAsStringAsync();
-                    dynamic pollutionData = JsonConvert.DeserializeObject(json);
-
-                    if (pollutionData.list.Count > 0)
-                    {
-                        var components = pollutionData.list[0].components;
-                        weatherData.AirQualityIndex = (int)pollutionData.list[0].main.aqi;
-                        weatherData.CO = (double)components.co;
-                        weatherData.NO = (double)components.no;
-                        weatherData.NO2 = (double)components.no2;
-                        weatherData.O3 = (double)components.o3;
-                        weatherData.SO2 = (double)components.so2;
-                        weatherData.PM2_5 = (double)components.pm2_5;
-                        weatherData.PM10 = (double)components.pm10;
-                    }
-
+                    SaveWeatherData(weatherData);
                     return weatherData;
                 }
             }
             catch (Exception ex)
             {
-                Logging.LogException("Error fetching weather data", ex);
+                Console.WriteLine($"Error fetching weather data: {ex.Message}");
             }
             return null;
         }
     }
 
-    private static async Task<Tuple<double, double>?> GetCoordinatesForCity(HttpClient client, string cityName)
+    private static async Task<Tuple<double, double>> FetchCoordinates(string cityName)
     {
-        string url = $"{GeocodeUrl}?q={cityName}&appid={ApiKey}&limit=1";
-        var response = await client.GetAsync(url);
-        if (response.IsSuccessStatusCode)
+        using (HttpClient client = new HttpClient())
         {
-            string json = await response.Content.ReadAsStringAsync();
-            dynamic data = JsonConvert.DeserializeObject(json);
-            if (data.Count > 0)
+            try
             {
-                double lat = (double)data[0].lat;
-                double lon = (double)data[0].lon;
-                return Tuple.Create(lat, lon);
+                string url = $"{GeocodeUrl}?q={cityName}&limit=1&appid={ApiKey}";
+                HttpResponseMessage response = await client.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync();
+                    dynamic data = JsonConvert.DeserializeObject(json);
+                    if (data.Count > 0)
+                    {
+                        double lat = (double)data[0].lat;
+                        double lon = (double)data[0].lon;
+                        return Tuple.Create(lat, lon);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching coordinates: {ex.Message}");
+            }
+            return null;
         }
-        return null;
     }
 
     public static async Task<List<ForecastData>> FetchForecastData(string cityName)
@@ -188,9 +142,9 @@ public class OpenWeatherAPI
                     {
                         forecasts.Add(new ForecastData
                         {
-                            Time = UnixTimeStampToDateTime(item.dt),
-                            Temperature = item.main.temp,
-                            Description = item.weather[0].description
+                            Time = UnixTimeStampToDateTime((long)item.dt),
+                            Temperature = (double)item.main.temp,
+                            Description = (string)item.weather[0].description
                         });
                     }
                     return forecasts;
@@ -198,31 +152,65 @@ public class OpenWeatherAPI
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ein Fehler ist aufgetreten: {ex.Message}");
+                Console.WriteLine($"Error fetching forecast data: {ex.Message}");
             }
             return new List<ForecastData>();
         }
     }
 
-    private static DateTime UnixTimeStampToDateTime(dynamic unixTimeStamp)
+    private static DateTime UnixTimeStampToDateTime(long unixTimeStamp)
     {
-        if (unixTimeStamp == null)
-        {
-            Logging.Log("Unix timestamp is null, returning DateTime.MinValue");
-            return DateTime.MinValue;
-        }
+        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+        return dateTime;
+    }
 
-        if (double.TryParse(unixTimeStamp.ToString(), out double timeStamp))
+    public static void SaveWeatherData(WeatherData weatherData)
+    {
+        try
         {
-            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(timeStamp).ToLocalTime();
-            return dateTime;
+            string filePath = GetFilePath();
+            string json = JsonConvert.SerializeObject(weatherData, Formatting.Indented);
+            File.WriteAllText(filePath, json);
+            Console.WriteLine("Weather data saved successfully.");
         }
-        else
+        catch (Exception ex)
         {
-            Logging.Log($"Invalid unix timestamp: {unixTimeStamp}");
-            return DateTime.MinValue;
+            Console.WriteLine($"Error saving weather data: {ex.Message}");
         }
     }
 
+    public static void SerializeWeatherData(WeatherData weatherData)
+    {
+        try
+        {
+            string filePath = GetFilePath();
+            string json = JsonConvert.SerializeObject(weatherData, Formatting.Indented);
+            File.WriteAllText(filePath, json);
+            Console.WriteLine("Weather data serialized successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error serializing weather data: {ex.Message}");
+        }
+    }
+
+    public static WeatherData DeserializeWeatherData()
+    {
+        try
+        {
+            string filePath = GetFilePath();
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                WeatherData weatherData = JsonConvert.DeserializeObject<WeatherData>(json);
+                return weatherData;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deserializing weather data: {ex.Message}");
+        }
+        return null;
+    }
 }

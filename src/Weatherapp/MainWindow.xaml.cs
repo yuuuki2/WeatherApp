@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using System.IO;
 
-
 namespace Weatherapp
 {
     public partial class MainWindow : Window
@@ -44,7 +43,7 @@ namespace Weatherapp
             if (!string.IsNullOrEmpty(TxBLocation.Text))
             {
                 await mapWidget.Initialize(TxBLocation.Text);
-                mapWebView.Source = new Uri(mapWidget.GetCurrentMapUrl()); // Verwende die aktuelle URL der Map
+                mapWebView.Source = new Uri(mapWidget.GetCurrentMapUrl());
             }
             Logging.Log("Map widget initialized.");
         }
@@ -63,11 +62,19 @@ namespace Weatherapp
                 await FetchWeatherDataIfNeeded();
                 if (!string.IsNullOrEmpty(TxBLocation.Text))
                 {
-                    await mapWidget.Initialize(TxBLocation.Text); // Aktualisiere die Map, wenn sich der Standort ändert
-                    mapWebView.Source = new Uri(mapWidget.GetCurrentMapUrl()); // Verwende die aktuelle URL der Map
+                    if (mapWidget != null) // Überprüfung auf null hinzugefügt
+                    {
+                        await mapWidget.Initialize(TxBLocation.Text); // Aktualisiere die Map, wenn sich der Standort ändert
+                        mapWebView.Source = new Uri(mapWidget.GetCurrentMapUrl()); // Verwende die aktuelle URL der Map
+                    }
+                    else
+                    {
+                        Logging.Log("mapWidget is null. Check initialization.");
+                    }
                 }
             }
         }
+
 
         private async Task FetchWeatherDataIfNeeded()
         {
@@ -85,7 +92,8 @@ namespace Weatherapp
                 if (weatherData != null)
                 {
                     UpdateWeatherDisplay(weatherData);
-                    Logging.Log($"Fetched weather data for {location}.");
+                    OpenWeatherAPI.SerializeWeatherData(weatherData);
+                    Logging.Log($"Fetched and serialized weather data for {location}.");
                 }
                 else
                 {
@@ -148,25 +156,9 @@ namespace Weatherapp
 
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // Hier den Pfad zur Datei angeben, aus der die Daten geladen werden soll
-                string filePath = "path/to/serialized/data.json";
-
-                // Den serialisierten Datenstring aus der Datei laden
-                string serializedData = File.ReadAllText(filePath);
-
-
-                WeatherData weatherData = OpenWeatherAPI.DeserializeWeatherData(serializedData);
-
-            }
-            catch (Exception ex)
-            {
-    
-                MessageBox.Show($"Error loading weather data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            LoadWindow window = new LoadWindow();
+            window.Show();
         }
-
 
         private async void btnSafe_Click(object sender, RoutedEventArgs e)
         {
@@ -178,6 +170,7 @@ namespace Weatherapp
                     if (weatherData != null)
                     {
                         OpenWeatherAPI.SerializeWeatherData(weatherData);
+                        Logging.Log("Weather data fetched and saved.");
                     }
                     else
                     {
@@ -191,10 +184,8 @@ namespace Weatherapp
             }
             catch (Exception ex)
             {
-                // Fehlerbehandlung, falls beim Serialisieren und Speichern ein Fehler auftritt
                 MessageBox.Show($"Error saving weather data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
     }
 }
