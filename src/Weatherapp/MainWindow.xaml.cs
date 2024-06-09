@@ -9,9 +9,11 @@ namespace Weatherapp
     public partial class MainWindow : Window
     {
         private DispatcherTimer timer;
-        private string lastLocation;
-        private WeatherWidget? weatherWidget;
         private DateTime lastUpdateTime = DateTime.MinValue;
+        private string lastLocation;
+
+        private MapWidget mapWidget;
+        private WeatherWidget weatherWidget;
 
         public MainWindow()
         {
@@ -29,7 +31,20 @@ namespace Weatherapp
         {
             this.WindowState = WindowState.Maximized;
             InitializeWeatherWidget();
+            await InitializeMapWidget();
             await FetchWeatherDataIfNeeded();
+        }
+
+        private async Task InitializeMapWidget()
+        {
+            await mapWebView.EnsureCoreWebView2Async(null);
+            mapWidget = new MapWidget(mapWebView.CoreWebView2);
+            if (!string.IsNullOrEmpty(TxBLocation.Text))
+            {
+                await mapWidget.Initialize(TxBLocation.Text);
+                mapWebView.Source = new Uri(mapWidget.GetCurrentMapUrl()); // Verwende die aktuelle URL der Map
+            }
+            Logging.Log("Map widget initialized.");
         }
 
         private void InitializeWeatherWidget()
@@ -44,6 +59,11 @@ namespace Weatherapp
             {
                 lastLocation = TxBLocation.Text;
                 await FetchWeatherDataIfNeeded();
+                if (!string.IsNullOrEmpty(TxBLocation.Text))
+                {
+                    await mapWidget.Initialize(TxBLocation.Text); // Aktualisiere die Map, wenn sich der Standort ändert
+                    mapWebView.Source = new Uri(mapWidget.GetCurrentMapUrl()); // Verwende die aktuelle URL der Map
+                }
             }
         }
 
@@ -118,8 +138,6 @@ namespace Weatherapp
                 }
             });
         }
-
-
 
         private bool ShouldFetchData()
         {
