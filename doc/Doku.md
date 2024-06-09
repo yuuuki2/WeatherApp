@@ -18,3 +18,7 @@ Wir haben die Nugget´s:
 * Newtonsoft.Json
 verwendet um das Projekt möglich zu machen.
 
+# bug
+* wenn ich auf load drücke kommt die aktuelle Daten und in der main window nix.
+
+
