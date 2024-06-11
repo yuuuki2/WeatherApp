@@ -7,24 +7,6 @@
         mc:Ignorable="d"
         Title="LoadWindow" Height="450" Width="800">
     <Grid>
-        <ListBox x:Name="LibData" Height="654">
-            <ListBoxItem x:Name="LbiTemperature" Content="Temperature:" FontSize="25" Margin="0,30,0,0" Background="LightGray"/>
-            <ListBoxItem x:Name="LbiCloudcover" Content="Cloud cover:" FontSize="25"/>
-            <ListBoxItem x:Name="LbiHumidity" Content="Humidity:" FontSize="25" Background="LightGray"/>
-            <ListBoxItem x:Name="LbiAirpressure" Content="Air pressure:" FontSize="25"/>
-            <ListBoxItem x:Name="LbiWinddata" Content="Wind direction/speed:" FontSize="25" Background="LightGray"/>
-            <ListBoxItem x:Name="LbiVisibility" Content="Visibility:" FontSize="25"/>
-            <ListBoxItem x:Name="LbiSunrise" Content="Sunrise:" FontSize="25" Background="LightGray"/>
-            <ListBoxItem x:Name="LbiSunset" Content="Sunset:" FontSize="25"/>
-            <ListBoxItem x:Name="LbiAQI" Content="Air Quality Index:" FontSize="25" Background="LightGray"/>
-            <ListBoxItem x:Name="LbiCO" Content="CO (Carbon Monoxide):" FontSize="25"/>
-            <ListBoxItem x:Name="LbiNO" Content="NO (Nitrogen Monoxide):" FontSize="25" Background="LightGray"/>
-            <ListBoxItem x:Name="LbiNO2" Content="NO2 (Nitrogen Dioxide):" FontSize="25"/>
-            <ListBoxItem x:Name="LbiO3" Content="O3 (Ozone):" FontSize="25" Background="LightGray"/>
-            <ListBoxItem x:Name="LbiSO2" Content="SO2 (Sulphur Dioxide):" FontSize="25"/>
-            <ListBoxItem x:Name="LbiPM25" Content="PM2.5:" FontSize="25" Background="LightGray"/>
-            <ListBoxItem x:Name="LbiPM10" Content="PM10:" FontSize="25"/>
-        </ListBox>
-
+        
     </Grid>
 </Window>
